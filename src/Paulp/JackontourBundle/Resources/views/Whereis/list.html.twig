@@ -1,0 +1,50 @@
+<div id="renderList">
+<div class="list-group">
+	{% for tp in tappe %}
+
+	{% if loop.index == page * pageSize + 1 %}
+		<button class="btn btn-primary" onclick="renderlist({{page}})">pag {{page}}</button>	
+	{% else %}	
+		<div class="panel-group" title="{{ tp.data|date("d/m/Y") }}" >
+			<div class="panel panel-default" role="button" 
+				data-toggle="collapse" data-target="#collapse{{ loop.index - 1 }}" aria-expanded="false" 
+				onclick="showMMarker({{ loop.index - 1 }}); $(this).toggleClass( 'panel-primary' );
+				">
+				<div class="panel-heading">
+					[{{ tp.nome }}]: {{ tp.city|default(tp.addr) }} # {{tp.id}}
+					{% if app.session.get('lastId') is defined and app.session.get('lastId') == tp.id %}
+						<a href="/remove/{{tp.id}}">x</a>
+					{% endif %}
+				</div>
+				<div id="collapse{{ loop.index - 1 }}" class="collapse panel-body">{{ tp.addr }}</div>
+			</div>
+		</div>	
+		<div class="inarray hidden">
+			<div>{{ tp.latlng }}</div>
+			<div>{{ loop.index }}</div>
+			<div>{{ tp.addr }}</div>
+		</div>
+	{% endif %}
+	
+	{% endfor %}
+</div>
+</div>
+
+<script type="text/javascript">
+<!--
+var list = $("div.inarray").map(function() { 
+	return [$(this).children("div").map(function() {return $(this).text()}).get()]	
+	}).get();
+	
+function renderlist(page){
+$.ajax({
+        type: "GET",
+        url: "/list/"+(page+1),
+        success: function(response) {
+        	$('#renderList').html( response );
+        	rendering();
+        }
+    });
+}
+//-->
+</script>

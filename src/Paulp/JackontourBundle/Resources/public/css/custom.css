@@ -1,0 +1,14 @@
+body{ 
+	/* per navbar fixed */ 
+	padding-top:70px;
+}
+#geolocmsg{
+	position:absolute; 
+	width:100%;  
+	padding-right:30px;
+	z-index:2;
+}
+#map-canvas{
+	width:100%; 
+	height:500px;
+}

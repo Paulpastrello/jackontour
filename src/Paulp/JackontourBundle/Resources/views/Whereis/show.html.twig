@@ -1,0 +1,96 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}WhereIs{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link type="text/css" rel="stylesheet" href="{{ asset('bundles/paulpjackontour/css/custom.css') }}">
+<script src="https://maps.googleapis.com/maps/api/js"></script>
+<script>
+var greenicon = "{{ asset('bundles/paulpjackontour/images/green.gif') }}";
+var paulpicon = "{{ asset('bundles/paulpjackontour/images/paulp.ico') }}";
+</script>
+{% endblock %}
+
+{% block body %}
+<header>
+<nav class="navbar navbar-default navbar-fixed-top">    	
+	<div class="container-fluid">		  
+		<div class="navbar-header navbar-right">
+		  	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar_c" aria-expanded="false" aria-controls="navbar">
+		      <span class="sr-only">Toggle navigation</span>
+		      <span class="icon-bar"></span>
+		      <span class="icon-bar"></span>
+		      <span class="icon-bar"></span>
+		    </button>
+			{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+				<p class="navbar-text">
+				<span class="glyphicon glyphicon-user text-primary" aria-hidden="true"></span>
+				{{ app.user.username }} - 
+				<a href="/logout" class="navbar-link">Logout <span class="glyphicon glyphicon-off text-danger" aria-hidden="true"></span></a>
+				</p>
+			{% endif %}
+	  	</div>
+	  	
+		<div id="navbar_c" class="navbar-left collapse navbar-collapse">
+		<ul class="nav navbar-nav">
+			<li class="active"><a href="#">Percorso</a></li>
+			<li><a href="#">Tappe</a></li>
+			<li><a href="#">Libro</a></li>
+			<li><a href="#">#JackloSquartatorTe</a></li>
+		</ul>  
+	  	</div>
+	</div>
+</nav>
+</header>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-xs-12">
+		{% for flashMessage in app.session.flashbag.get('danger') %}
+			<div class="alert alert-danger alert-dismissible" role="alert">
+			<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> 
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{ flashMessage }}</div>
+		{% endfor %}
+		{% for flashMessage in app.session.flashbag.get('warning') %}
+			<div class="alert alert-warning alert-dismissible" role="alert">
+			<span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{ flashMessage }}</div>
+		{% endfor %}
+		{% for flashMessage in app.session.flashbag.get('success') %}
+			<div class="alert alert-success alert-dismissible" role="alert">
+			<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{ flashMessage }}</div>
+		{% endfor %}
+		{% for flashMessage in app.session.flashbag.get('info') %}
+			<div class="alert alert-info alert-dismissible" role="alert">
+			<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{ flashMessage }}</div>
+		{% endfor %}
+		</div>
+	</div>
+	{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+		{{ include('PaulpJackontourBundle:Whereis:add.html.twig') }}
+	{% else %}
+		{{ include('PaulpJackontourBundle:Security:login.html.twig') }}
+	{% endif %}
+	<div class="row">	
+		<div class="col-sm-9 col-xs-12">
+			{{ include('PaulpJackontourBundle:Whereis:map.html.twig') }}
+		</div>
+		<div class="col-sm-3 col-xs-12">
+			{{ render(controller('PaulpJackontourBundle:Whereis:list')) }}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="{{ asset('bundles/paulpjackontour/js/markerclusterer-min.js') }}"></script>
+<script src="{{ asset('bundles/paulpjackontour/js/gmap.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,29 @@
+<div class="row">
+    <div class="col-xs-12">
+    	{% if error is defined and error %}
+	    <div class="alert alert-danger" role="alert">	    
+	    	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+	    	<span>{{ error.messageKey|trans(error.messageData, 'security') }}</span>
+    	
+    	{% else %}
+	    <div class="well well-sm">
+	    	<button type="button" class="close" onclick="$(this).parent().hide();" aria-label="Close">
+	    		<span aria-hidden="true">&times;</span>
+	    	</button>
+			<p>
+			<span class="glyphicon glyphicon-bell text-primary" aria-hidden="true"></span>
+			Hai avuto la fortuna di incontrare Jack lo SquartatorTe? Inserisci qui la parola segreta per accedere.
+			</p>
+    		
+    	{% endif %}
+			<form class="form-inline" action="{{ path('login_check') }}" method="post">
+				<div class="form-group">
+					<input type="password" name="_password" class="form-control" placeholder="Password">
+					<input type="hidden" name="_username" value="Lettore" />
+					<input type="hidden" name="_target_path" value="/" />
+				</div>
+				<button type="submit" class="btn btn-primary">Accedi</button>
+			</form>
+		</div>
+	</div>
+</div>
