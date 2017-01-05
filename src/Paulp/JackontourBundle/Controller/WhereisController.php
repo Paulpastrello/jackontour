@@ -15,7 +15,7 @@ use Paulp\JackontourBundle\Form\TappeType;
 class WhereisController extends Controller
 {
 	/**
-	 * @Route("/remove/{id}")
+	 * @Route("/remove/{id}" name="remove")
 	 * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
 	 * @Template()
 	 */

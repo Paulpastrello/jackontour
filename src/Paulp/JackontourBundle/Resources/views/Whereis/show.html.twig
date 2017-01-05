@@ -1,6 +1,6 @@
 {% extends "::base.html.twig" %}
 
-{% block title %}WhereIs{% endblock %}
+{% block title %}JackonTour{% endblock %}
 
 {% block stylesheets %}
 {{ parent() }}
@@ -27,7 +27,7 @@ var paulpicon = "{{ asset('bundles/paulpjackontour/images/paulp.ico') }}";
 				<p class="navbar-text">
 				<span class="glyphicon glyphicon-user text-primary" aria-hidden="true"></span>
 				{{ app.user.username }} - 
-				<a href="/logout" class="navbar-link">Logout <span class="glyphicon glyphicon-off text-danger" aria-hidden="true"></span></a>
+				<a href="{{ path('logout') }}" class="navbar-link">Logout <span class="glyphicon glyphicon-off text-danger" aria-hidden="true"></span></a>
 				</p>
 			{% endif %}
 	  	</div>
