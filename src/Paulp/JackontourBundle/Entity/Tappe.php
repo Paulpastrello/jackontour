@@ -27,7 +27,10 @@ class Tappe
      * @var string
      *
      * @ORM\Column(name="nome", type="string", length=32)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     	groups={"Tappe","step1"},
+     	message = "Nome obbligatorio"
+     	)
      */
     private $nome;
 
@@ -45,7 +48,10 @@ class Tappe
      * @var string
      *
      * @ORM\Column(name="addr", type="string", length=256)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+        groups={"Tappe","step1"},
+     	message = "Indirizzo obbligatorio"
+     	)
      */
     private $addr;
     
@@ -61,6 +67,7 @@ class Tappe
      *
      * @ORM\Column(name="latlng", type="string", length=64)
      * @Assert\NotBlank(
+        groups={"Tappe","step1"},
      	message = "Posizione non riconosciuta. Controlla l'indirizzo o seleziona un punto sulla mappa."
      	)
      */
@@ -79,6 +86,13 @@ class Tappe
      * @ORM\Column(name="status", type="string", length=1, options={"default":"C"})
      */
     private $status = 'C';
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tweet", type="string", length=160, nullable=true)
+     */
+    private $tweet;
 
 
     /**
@@ -245,5 +259,28 @@ class Tappe
     public function getData()
     {
         return $this->data;
+    }
+    
+    /**
+     * Set tweet
+     *
+     * @param string $nome
+     * @return Tappe
+     */
+    public function setTweet($tweet)
+    {
+    	$this->tweet = $tweet;
+    
+    	return $this;
+    }
+    
+    /**
+     * Get tweet
+     *
+     * @return string
+     */
+    public function getTweet()
+    {
+    	return $this->tweet;
     }
 }

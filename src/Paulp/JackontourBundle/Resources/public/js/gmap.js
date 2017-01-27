@@ -1,11 +1,6 @@
 //COSTANTI
-var urlGeoJSON = 'https://maps.googleapis.com/maps/api/geocode/json?';
-var openErr = '<div class="alert alert-danger alert-dismissible"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> ';
-var openInfo = '<div class="alert alert-info alert-dismissible"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> ';
-var dismissBtn = '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
-var closeDiv = '</div>';
 var infowindow = new google.maps.InfoWindow();
-var mcOptions = {maxZoom: 40, gridSize: 20, ignoreHidden: true};
+var mcOptions = {maxZoom: 40, gridSize: 20, ignoreHidden: true, styles: clusterStyles};
 
 //VARS
 var map;
@@ -14,92 +9,42 @@ var mmarkers = [];	//lista selezionata
 var markerCluster;
 var mmarkerCluster;
 var cmarkers = [];	//selezionato dall'utente
-var clickListener;
 
-function setFormLocation(position){				    
-	$('#remloc').removeClass('hidden');
-	$('#geoloc').addClass('hidden');
-	getAddress(position); //paulp_jackontourbundle_tappe_addr è impostato in questa funz
-	google.maps.event.removeListener(clickListener);
-}
-function removeFormLocation(){
-	deleteMarkers(cmarkers);
-	cmarkers=[];
-	$('#paulp_jackontourbundle_tappe_latlng').val('');
-	$('#paulp_jackontourbundle_tappe_addr').val('').attr('readonly',false);
-	$('#remloc').addClass('hidden');
-	$('#geoloc').removeClass('hidden');
-	$('#geolocmsg').html('');
-	addClickListener();
-}
- 
-//SET LOCATION UTENTE
-function setLocation(position){
-	deleteMarkers(cmarkers);
-	cmarkers=[];
-	var tempMarker = addMarker(position);
-	tempMarker.setIcon(greenicon);
-	cmarkers.push(tempMarker);
-	setFormLocation(position);
-  
-	google.maps.event.addListener(tempMarker, 'click', function(event) {
-		removeFormLocation();  	
-	});
-}
-
-// INDIRIZZO
-function getAddress(latlng){    	
+// GoogleApi
+function getGoogleAddress(position){
 	try{
-		if(latlng == null || latlng == '') throw 'Selezionare una posizione';
-	  	$.getJSON( urlGeoJSON+'latlng='+latlng.lat()+","+latlng.lng()	, function( obj ) {
-	  		if(typeof(obj.results[0]) === 'undefined' || obj.results[0] == null || obj.results[0] == '') 
-	  			$('#geolocmsg').html(openErr+dismissBtn+'Oooops! Impossibile trovare un indirizzo valido alle coordinate '+latlng+'.'+closeDiv);
-	  		else{
-	  			var address = obj.results[0].formatted_address;
-	  			console.log(latlng.lat()+","+latlng.lng());
-	  			$('#paulp_jackontourbundle_tappe_latlng').val(latlng.lat()+","+latlng.lng());
-	  			$('#paulp_jackontourbundle_tappe_addr').val(address).attr('readonly',true);
-	  			$('#geolocmsg').html(openInfo+dismissBtn+'Impostato l&apos;indirizzo "'+address+'". Ti piace?'+closeDiv);
-			}
-		});
+		if(position == null || position == '') throw 'Selezionare una posizione';
+		$.ajax({
+	        type: "POST",
+	        url: 'gapicode',
+	        data: {
+	        	lat: position.lat(),
+	        	lng: position.lng()
+	        },
+	        dataType: "json",
+	        success: function(response) {
+	        	callbackGoogleAddress(response);
+	        }
+	    });
 	} catch(err){
-		$('#geolocmsg').html(openErr+dismissBtn+err+closeDiv);
+		throw err;
 	}
 }
 
-// Geolocalizzazione
-function getGeoLocation() {
-	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(showPosition, showError);
-	} else { 
-		$('#geolocmsg').html(openErr+dismissBtn+'Oooops! Il tuo browser non supporta la Geolocalizzazione.'+closeDiv);
-	}
-
-	function showPosition(position) {
-		//converto nella position di google
-		var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
-		setLocation(latlng);
-		map.panTo(latlng);
-	}
-	
-	function showError(error) {
-		switch(error.code) {
-		    case error.PERMISSION_DENIED:
-		    		$('#geolocmsg').html(openErr+dismissBtn+'Oooops! Hai negato la richiesta di Geolocalizzazione.'+closeDiv);
-		        break;
-		    case error.POSITION_UNAVAILABLE:
-		    		$('#geolocmsg').html(openErr+dismissBtn+'Oooops! La tua posizione non è disponibile.'+closeDiv);
-		        break;
-		    case error.TIMEOUT:
-		    		$('#geolocmsg').html(openErr+dismissBtn+'Oooops! Il sistema non ha risposto in tempo.'+closeDiv);
-		        break;
-		    case error.UNKNOWN_ERROR:
-		    		$('#geolocmsg').html(openErr+dismissBtn+'Oooops! Errore sconosciuto.'+closeDiv);
-		        break;
-		}
+function getGoogleLocation(){
+	try {
+		$.ajax({
+	        type: "GET",
+	        url: 'gapiloc',
+	        success: function(response) {
+	        	callbackGoogleLocation(response);	        	
+	        }
+	    });
+	} catch(err){
+		throw err;
 	}
 }
-		    
+
 //GESTIONE MAPPA
 function centerMap(obj){
 	if(typeof(obj) !== "undefined" && obj!=null && obj.length>0){
@@ -114,28 +59,40 @@ function clearMap() {
 	showHideMarkers(mmarkers, false);
 }
 function zoomMap(obj) {
-	map.setZoom(10);
 	var bounds = new google.maps.LatLngBounds();
 	if(typeof(obj) === "undefined" || obj==null || obj.length<=0)
 		obj = markers; //vuoto quindi leggo dalla lista markers
 	
+	console.log("preparo il zooomming");
 	if(obj.length>0){
 		for(i=0;i<obj.length;i++) {
 			bounds.extend(obj[i].getPosition());
 		}
+		
+		console.log(obj.length);
 		map.fitBounds(bounds);
+		console.log("zz:"+map.getZoom());
 	}
+	
+	//zoom automatico
+	if(map.getZoom()>16)
+		map.setZoom(16)
 }
 
-function rendering() {
+function rendering(clickable) {	
+	clickable = typeof(clickable) === 'boolean' ? clickable : true;
+	
  	var mapOptions = {
 	  center: centerMap(list),
-	  mapTypeId: google.maps.MapTypeId.TERRAIN
+	  mapTypeId: google.maps.MapTypeId.TERRAIN,
+	  maxZoom: 18 //zoom manuale
 	}
 	map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
  			
  	initMarkers(list);
-	addClickListener(); 
+ 	if(clickable){
+ 	 	addClickListener(); 		
+ 	}
   
 	markerCluster = new MarkerClusterer(map, markers, mcOptions);
 	mmarkerCluster = new MarkerClusterer(map, mmarkers, mcOptions);
@@ -143,9 +100,8 @@ function rendering() {
 	zoomMap();
 }
 
-function addClickListener(){	
-	google.maps.event.removeListener(clickListener);
-	clickListener = google.maps.event.addListener(map, 'click', function(event) {
+function addClickListener(){
+	google.maps.event.addListenerOnce(map, 'click', function(event) {
 		setLocation(event.latLng);
 	});
 }
@@ -166,7 +122,6 @@ function addAdvancedMarker(obj){
 		if(obj[obj.length-1]!=null){
 			var htm = obj[obj.length-1];			
 		  	mark.setTitle(htm);
-//		  	$(htm).first().text()
 		  	google.maps.event.addListener(mark, 'click', function(event) {
 		  		infowindow.setContent(htm);
 		    	infowindow.open(map, this);
@@ -228,5 +183,6 @@ function deleteMarkers(arr) {
 	for (var i = 0; i < arr.length; i++) {
 		arr[i].setMap(null);
 	}
-}	
-google.maps.event.addDomListener(window, 'load', rendering);
+}
+
+google.maps.event.addDomListenerOnce(window, 'load', rendering);

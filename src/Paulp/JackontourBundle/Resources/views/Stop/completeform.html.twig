@@ -1,0 +1,27 @@
+{% extends "PaulpJackontourBundle::base.html.twig" %}
+
+{% block page %}
+	{{ include('PaulpJackontourBundle:Stop:add.html.twig') }}
+	
+	<div class="row">
+	<div class="inarray hidden">
+		<div>{{ form.vars.value.latlng }}</div>
+		<div>0</div>
+		<div>{{ form.vars.value.addr }}</div>
+	</div>
+	{{ include('PaulpJackontourBundle:Tour:map.html.twig') }}
+	</div>
+
+{% endblock %}	
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+<!--
+var list = $("div.inarray").map(function() { 
+	return [$(this).children("div").map(function() {return $(this).text()}).get()]	
+	}).get();
+
+//-->	
+</script>
+{% endblock %}

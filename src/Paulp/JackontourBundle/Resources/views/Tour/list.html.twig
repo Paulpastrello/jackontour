@@ -13,7 +13,7 @@
 				<div class="panel-heading">
 					[{{ tp.nome }}]: {{ tp.city|default(tp.addr) }} # {{tp.id}}
 					{% if app.session.get('lastId') is defined and app.session.get('lastId') == tp.id %}
-						<a href="{{ path('remove', {'id': tp.id}) }}">x</a>
+						<a href="{{ path('remove_stop', {'id': tp.id}) }}">x</a>
 					{% endif %}
 				</div>
 				<div id="collapse{{ loop.index - 1 }}" class="collapse panel-body">{{ tp.addr }}</div>
