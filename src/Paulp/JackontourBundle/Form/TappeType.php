@@ -8,72 +8,76 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Paulp\JackontourBundle\Entity\Tappe;
+use Paulp\JackontourBundle\Entity\Geoloc;
+use Paulp\JackontourBundle\Service\Googleapi;
 
 class TappeType extends AbstractType
 {
+	private $gapi;
+	
+	public function __construct(Googleapi $gapi)
+	{
+		$this->gapi = $gapi;
+	}
+	
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
     	$tappe = new Tappe();
     	
-        $builder
-            ->add('nome', 'text')
-            ->add('email', 'email', array('required' => false))
-            ->add('addr', 'text')
-            ->add('latlng', 'hidden')            
-            ->add('save', 'submit', array('label' => 'Crea post'))
-            ;
-        
-        $builder 
-        	->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($tappe) {
+        if( $options['step'] == 2 ){
+        	$builder
+        		->add('nome', 'hidden')
+        		->add('latlng', 'hidden')
+        		->add('addr', 'text', array('disabled' => true))
+        		->add('email', 'text', array('required' => false))
+        		->add('tweet', 'textarea', array('required' => false))
+        		->add('save', 'submit', array('label' => 'Conferma'))
+        		->add('cancel', 'submit', array('label' => 'Modifica'));
+        }else {
+        	$builder
+	        	->add('nome', 'text')
+	        	->add('addr', 'text')
+	        	->add('latlng', 'hidden')
+	        	->add('save', 'submit', array('label' => 'Inserisci'));
+        	
+        	$builder
+	        	->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($tappe) {
+	        		$tappe = $event->getData();
+	        		$this->fillGeolocFields($tappe);
+        	});
+        }
+                
+        	/*->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($tappe) {
         		$tappe = $event->getData();
-        		$result = $this->callGoogleApis($tappe);
         		
-        		if($result!=null){
-        			$location = $result['geometry']['location'];
-        			$latlng = $location['lat'].','.$location['lng'];
-        			$formatted_address = $result['formatted_address'];
-        			$address_components = $result['address_components'];
-        			
-        			$city = "";
-        			for ($c = 0; $c < count($address_components); $c++) {
-        				if($address_components[$c]['types'][0]==='administrative_area_level_3')
-        					$city = $address_components[$c]['long_name'];
-        				else if($address_components[$c]['types'][0]==='locality'){
-        					$city = $address_components[$c]['long_name'];
-        					break;
-        				}
-        			}
-        			
-        			$tappe->setAddr($formatted_address);
-        			$tappe->setLatlng($latlng);
-        			$tappe->setCity($city);
+        		$geoloc = new Geoloc();
+        		$geoloc = $this->gapi->callGooglelocation();
+        		
+        		if($geoloc!=null){
+        			$tappe->setLatlng($geoloc->getPosition());
+	        		$this->fillGeolocFields($tappe);
         		}
-            })
-        ;
+        	})*/
     }
     
-    public function callGoogleApis(Tappe $tappe){
-		if($tappe->getLatlng()===null || $tappe->getLatlng()===''){
-    		$cityclean = str_replace (" ", "+", $tappe->getAddr());
-    		$details_url = "http://maps.googleapis.com/maps/api/geocode/json?address=" . $cityclean . "&sensor=false";
-		} else {
-    		$details_url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" . $tappe->getLatlng() . "&sensor=false";
-		}
+    public function fillGeolocFields(Tappe $tappe){
+    	if($tappe->getLatlng()!=null && $tappe->getLatlng()!==''){
+    		$latlng = $tappe->getLatlng();
+    		$geoloc = $this->gapi->getGoogleAddress($latlng);
+    	} else {
+    		$addr = $tappe->getAddr();
+    		$geoloc = $this->gapi->getGoogleCoords($addr);
+    	}
     	
-    	$ch = curl_init();
-    	curl_setopt($ch, CURLOPT_URL, $details_url);
-    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    	$geoloc = json_decode(curl_exec($ch), true);
-
-    	if(count($geoloc['results'])>0){
-    		return $geoloc['results'][0];
-		} 
-    	else return null;
+    	if($geoloc!=null){
+    		$tappe->setAddr($geoloc->getAddress());
+    		$tappe->setLatlng($geoloc->getPosition());
+    		$tappe->setCity($geoloc->getCity());
+    	}
     }
     
     /**
@@ -82,7 +86,9 @@ class TappeType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Paulp\JackontourBundle\Entity\Tappe'
+            'data_class' => Tappe::class,
+        	'validation_groups' => array('Tappe'),
+        	'step' => 1
         ));
     }
 

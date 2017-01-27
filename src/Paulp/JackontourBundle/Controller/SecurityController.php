@@ -20,7 +20,7 @@ class SecurityController extends Controller
 		$error = $authenticationUtils->getLastAuthenticationError();
 		
 		return $this->render(
-			'PaulpJackontourBundle:Whereis:show.html.twig',
+			'PaulpJackontourBundle:Tour:show.html.twig',
 			array('error' => $error)
 		);
 	}

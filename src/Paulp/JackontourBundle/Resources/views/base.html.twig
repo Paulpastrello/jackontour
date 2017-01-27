@@ -1,18 +1,40 @@
 {% extends "::base.html.twig" %}
 
-{% block title %}JackonTour{% endblock %}
+{% block title %} JackonTour {% endblock %}
 
 {% block stylesheets %}
 {{ parent() }}
 <link type="text/css" rel="stylesheet" href="{{ asset('bundles/paulpjackontour/css/custom.css') }}">
-<script src="https://maps.googleapis.com/maps/api/js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{googlekey}}"></script>
 <script>
 var greenicon = "{{ asset('bundles/paulpjackontour/images/green.gif') }}";
 var paulpicon = "{{ asset('bundles/paulpjackontour/images/paulp.ico') }}";
+var clusterStyles = [
+{
+   textColor: 'red',
+   url: '{{ asset('bundles/paulpjackontour/images/green.gif') }}',
+   height: 50,
+   width: 50
+},
+{
+   textColor: 'red',
+   url: '{{ asset('bundles/paulpjackontour/images/paulp.ico') }}',
+   height: 50,
+   width: 50
+},
+{
+   textColor: 'red',
+   url: '{{ asset('bundles/paulpjackontour/images/green.gif') }}',
+       height: 50,
+       width: 50
+     }
+];
 </script>
 {% endblock %}
 
 {% block body %}
+
+{% block menu %}
 <header>
 <nav class="navbar navbar-default navbar-fixed-top">    	
 	<div class="container-fluid">		  
@@ -43,8 +65,11 @@ var paulpicon = "{{ asset('bundles/paulpjackontour/images/paulp.ico') }}";
 	</div>
 </nav>
 </header>
+{% endblock %}
 
 <div class="container-fluid">
+	
+	{% block alerts %}
 	<div class="row">
 		<div class="col-xs-12">
 		{% for flashMessage in app.session.flashbag.get('danger') %}
@@ -73,19 +98,10 @@ var paulpicon = "{{ asset('bundles/paulpjackontour/images/paulp.ico') }}";
 		{% endfor %}
 		</div>
 	</div>
-	{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-		{{ include('PaulpJackontourBundle:Whereis:add.html.twig') }}
-	{% else %}
-		{{ include('PaulpJackontourBundle:Security:login.html.twig') }}
-	{% endif %}
-	<div class="row">	
-		<div class="col-sm-9 col-xs-12">
-			{{ include('PaulpJackontourBundle:Whereis:map.html.twig') }}
-		</div>
-		<div class="col-sm-3 col-xs-12">
-			{{ render(controller('PaulpJackontourBundle:Whereis:list')) }}
-		</div>
-	</div>
+	{% endblock %}
+	
+	{% block page %}{% endblock %}
+	
 </div>
 {% endblock %}
 
