@@ -3,18 +3,11 @@
 {% block page %}
 	
 	{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-<<<<<<< HEAD
 		{{ include('PaulpJackontourBundle:Stop:add/stepone.html.twig') }}
 	{% else %}
 		{{ include('PaulpJackontourBundle:Security:login.html.twig') }}
 	{% endif %}
 	
-=======
-		{{ include('PaulpJackontourBundle:Stop:locate.html.twig') }}
-	{% else %}
-		{{ include('PaulpJackontourBundle:Security:login.html.twig') }}
-	{% endif %}
->>>>>>> refs/remotes/origin/master
 	<div class="row">	
 		<div class="col-sm-9 col-xs-12">
 			{{ include('PaulpJackontourBundle:Tour:map.html.twig') }}

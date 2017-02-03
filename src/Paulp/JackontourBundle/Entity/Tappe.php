@@ -91,13 +91,10 @@ class Tappe
      * @var string
      *
      * @ORM\Column(name="tweet", type="string", length=160, nullable=true)
-<<<<<<< HEAD
      * @Assert\Length(
            max = 160,
            maxMessage = "Il messaggio puo' contenere al massimo {{ limit }} charatteri"
       )
-=======
->>>>>>> refs/remotes/origin/master
      */
     private $tweet;
 

@@ -67,15 +67,8 @@ function zoomMap(obj) {
 	if(obj.length>0){
 		for(i=0;i<obj.length;i++) {
 			bounds.extend(obj[i].getPosition());
-<<<<<<< HEAD
 		}		
-=======
-		}
-		
-		console.log(obj.length);
->>>>>>> refs/remotes/origin/master
 		map.fitBounds(bounds);
-		console.log("zz:"+map.getZoom());
 	}
 	
 	//zoom automatico

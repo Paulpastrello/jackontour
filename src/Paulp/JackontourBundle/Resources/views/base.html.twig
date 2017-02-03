@@ -25,7 +25,6 @@ var clusterStyles = [
 {
    textColor: 'red',
    url: '{{ asset('bundles/paulpjackontour/images/green.gif') }}',
-<<<<<<< HEAD
    height: 50,
    width: 50
 }
@@ -60,42 +59,6 @@ var clusterStyles = [
 			<li><a href="{{ path('home') }}">Percorso</a></li>
 			<li><a href="{{ path('listext') }}">LisTappe</a></li>
 			<li><a href="http://paulpastrello.it">Libro</a></li>
-=======
-       height: 50,
-       width: 50
-     }
-];
-</script>
-{% endblock %}
-
-{% block body %}
-
-{% block menu %}
-<header>
-<nav class="navbar navbar-default navbar-fixed-top">    	
-	<div class="container-fluid">		  
-		<div class="navbar-header navbar-right">
-		  	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar_c" aria-expanded="false" aria-controls="navbar">
-		      <span class="sr-only">Toggle navigation</span>
-		      <span class="icon-bar"></span>
-		      <span class="icon-bar"></span>
-		      <span class="icon-bar"></span>
-		    </button>
-			{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-				<p class="navbar-text">
-				<span class="glyphicon glyphicon-user text-primary" aria-hidden="true"></span>
-				{{ app.user.username }} - 
-				<a href="{{ path('logout') }}" class="navbar-link">Logout <span class="glyphicon glyphicon-off text-danger" aria-hidden="true"></span></a>
-				</p>
-			{% endif %}
-	  	</div>
-	  	
-		<div id="navbar_c" class="navbar-left collapse navbar-collapse">
-		<ul class="nav navbar-nav">
-			<li class="active"><a href="#">Percorso</a></li>
-			<li><a href="#">Tappe</a></li>
-			<li><a href="#">Libro</a></li>
->>>>>>> refs/remotes/origin/master
 			<li><a href="#">#JackloSquartatorTe</a></li>
 		</ul>  
 	  	</div>

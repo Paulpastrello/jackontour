@@ -1,7 +1,6 @@
 {% extends "PaulpJackontourBundle::base.html.twig" %}
 
 {% block page %}
-<<<<<<< HEAD
 	
 	{{ include('PaulpJackontourBundle:Stop:add/steptwo.html.twig') }}
 	<div class="inarray hidden">
@@ -14,17 +13,6 @@
 		<div class="col-xs-12">
 			{{ include('PaulpJackontourBundle:Tour:map.html.twig') }}
 		</div>
-=======
-	{{ include('PaulpJackontourBundle:Stop:add.html.twig') }}
-	
-	<div class="row">
-	<div class="inarray hidden">
-		<div>{{ form.vars.value.latlng }}</div>
-		<div>0</div>
-		<div>{{ form.vars.value.addr }}</div>
-	</div>
-	{{ include('PaulpJackontourBundle:Tour:map.html.twig') }}
->>>>>>> refs/remotes/origin/master
 	</div>
 
 {% endblock %}	

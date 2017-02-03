@@ -26,15 +26,11 @@ class TappeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-<<<<<<< HEAD
     	$inputClass = 'form-control';
-=======
->>>>>>> refs/remotes/origin/master
     	$tappe = new Tappe();
     	
         if( $options['step'] == 2 ){
         	$builder
-<<<<<<< HEAD
         		->add('nome', 'text', array('disabled' => true, 'attr' => array('class' => $inputClass)))
         		->add('addr', 'text', array('disabled' => true, 'attr' => array('class' => $inputClass)))
         		->add('email', 'text', array('required' => false, 'attr' => array('class' => $inputClass, 'placeholder' => 'Email')))
@@ -48,21 +44,6 @@ class TappeType extends AbstractType
 	        	->add('addr', 'text', array('attr' => array('class' => $inputClass, 'placeholder' => 'Indirizzo')))
 	        	->add('latlng', 'hidden')
 	        	->add('save', 'submit', array('label' => 'Inserisci', 'attr' => array('class' => 'btn btn-primary')));
-=======
-        		->add('nome', 'hidden')
-        		->add('latlng', 'hidden')
-        		->add('addr', 'text', array('disabled' => true))
-        		->add('email', 'text', array('required' => false))
-        		->add('tweet', 'textarea', array('required' => false))
-        		->add('save', 'submit', array('label' => 'Conferma'))
-        		->add('cancel', 'submit', array('label' => 'Modifica'));
-        }else {
-        	$builder
-	        	->add('nome', 'text')
-	        	->add('addr', 'text')
-	        	->add('latlng', 'hidden')
-	        	->add('save', 'submit', array('label' => 'Inserisci'));
->>>>>>> refs/remotes/origin/master
         	
         	$builder
 	        	->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($tappe) {
