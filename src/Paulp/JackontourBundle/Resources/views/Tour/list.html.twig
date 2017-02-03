@@ -66,7 +66,7 @@ var callUrl = "/list/" + page ;
 if (offset!=='undefined' && offset>0){
  callUrl = callUrl + "/" + offset ;
 };
-console.log(callUrl);
+
 $.ajax({
         type: "GET",
         url: callUrl,
