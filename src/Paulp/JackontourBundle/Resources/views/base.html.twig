@@ -25,9 +25,9 @@ var clusterStyles = [
 {
    textColor: 'red',
    url: '{{ asset('bundles/paulpjackontour/images/green.gif') }}',
-       height: 50,
-       width: 50
-     }
+   height: 50,
+   width: 50
+}
 ];
 </script>
 {% endblock %}
@@ -56,9 +56,9 @@ var clusterStyles = [
 	  	
 		<div id="navbar_c" class="navbar-left collapse navbar-collapse">
 		<ul class="nav navbar-nav">
-			<li class="active"><a href="#">Percorso</a></li>
-			<li><a href="#">Tappe</a></li>
-			<li><a href="#">Libro</a></li>
+			<li><a href="{{ path('home') }}">Percorso</a></li>
+			<li><a href="{{ path('listext') }}">LisTappe</a></li>
+			<li><a href="http://paulpastrello.it">Libro</a></li>
 			<li><a href="#">#JackloSquartatorTe</a></li>
 		</ul>  
 	  	</div>

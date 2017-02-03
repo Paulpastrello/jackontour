@@ -1,15 +1,18 @@
 {% extends "PaulpJackontourBundle::base.html.twig" %}
 
 {% block page %}
-	{{ include('PaulpJackontourBundle:Stop:add.html.twig') }}
 	
-	<div class="row">
+	{{ include('PaulpJackontourBundle:Stop:add/steptwo.html.twig') }}
 	<div class="inarray hidden">
 		<div>{{ form.vars.value.latlng }}</div>
 		<div>0</div>
 		<div>{{ form.vars.value.addr }}</div>
 	</div>
-	{{ include('PaulpJackontourBundle:Tour:map.html.twig') }}
+		
+	<div class="row">
+		<div class="col-xs-12">
+			{{ include('PaulpJackontourBundle:Tour:map.html.twig') }}
+		</div>
 	</div>
 
 {% endblock %}	

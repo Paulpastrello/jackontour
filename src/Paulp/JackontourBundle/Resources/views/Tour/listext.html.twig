@@ -1,0 +1,97 @@
+{% extends "PaulpJackontourBundle::base.html.twig" %}
+
+{% block page %}
+
+<div class="row">
+<div class="col-xs-12">
+
+<div id="renderList">
+<div class="list-group">
+	{% set nextpage = false %}
+	{% for tp in tappe %}
+
+	{% if loop.index > pageSize %}
+		{% set nextpage = true %}
+	{% else %}	
+		<div class="panel-group">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<div class="row">
+						<div class="col-xs-9">							
+							{{ tp.nome }} -  
+							{{ tp.city|default(tp.addr) }} 
+						</div>
+						<div class="col-xs-3 text-right">
+							{{ tp.data|date("d/m/Y") }} 
+							#{{tp.id}}
+						</div>
+					</div>					
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-xs-12">
+							{{ tp.addr }}
+						</div>
+						{% if tp.tweet!=null %}
+							<div class="col-xs-12"><hr>
+								{{ tp.tweet|default('') }}
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+	
+	{% endfor %}
+</div>
+
+<div id="pagination" class="btn-group">
+	{# se ho la pagina pre #}
+	{% for i in 2..page if page > 1 %}
+		<button class="btn btn-default" onclick="renderlist({{i-1}})">
+			{% if i == 2 %}Pagina{% endif %} {{i-1}}
+		</button>
+	{% endfor %}
+	{% if page > 1 or nextpage %}
+	<button class="btn btn-secondary disabled">{{page}}</button>
+	{% endif %}
+	{% if nextpage %}
+		<button class="btn btn-primary" onclick="renderlist({{page+1}})">Pagina {{page+1}}</button>
+	{% endif %}
+</div>
+
+<div id="loading" class="hidden">Loading...</div>
+
+</div>
+{# fine renderlist #}
+
+</div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+<!--
+function renderlist(page){
+$.ajax({
+        type: "GET",
+        url: "/listext/"+page,
+        success: function(response) {
+        	$('#renderList').html( response );
+        	rendering();
+        },
+        error: function() {
+        	$('#loading').addClass('hidden');
+        	$('#pagination').children().removeClass('disabled');
+        },
+        beforeSend: function() {
+        	$('#loading').removeClass('hidden');
+        	$('#pagination').children().addClass('disabled');
+        }
+    });
+}
+//-->
+</script>
+{% endblock %}

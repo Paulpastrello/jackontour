@@ -60,6 +60,8 @@ class StopController extends Controller
     public function addAction(Request $request)
 	{		
 		$session = $request->getSession();
+		$session->remove('bababa');
+		$session->remove('sesstap');
 		
 		$tappe = new Tappe();
 		$form = $this->createForm($this->get('paulp_jackontour_tappetype'), $tappe, 
@@ -80,12 +82,15 @@ class StopController extends Controller
 					)
 			);
 			
-			$this->addFlash(
-				'info',
-				'Controlla sulla mappa il tuo indirizzo: " '.$tappe->getAddr().' ". Se è corretto conferma la posizione. Altrimenti ti prego di riprovare.'
-			);
+// 			$this->addFlash(
+// 				'info',
+// 				'Controlla sulla mappa il tuo indirizzo: " '.$tappe->getAddr().' ". Se è corretto conferma la posizione. Altrimenti ti prego di riprovare.'
+// 			);
+
+			return $this->render("PaulpJackontourBundle:Stop:completeform.html.twig", array('form' => $form->createView()));
+		} else {
+			return $this->render("PaulpJackontourBundle:Tour:show.html.twig", array('form' => $form->createView()));
 		}
-		return $this->render("PaulpJackontourBundle:Stop:completeform.html.twig", array('form' => $form->createView()));
 	}
 	
 	/**

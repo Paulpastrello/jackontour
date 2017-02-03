@@ -1,12 +1,23 @@
 <div id="renderList">
+
+<div id="prepagination">
+	{% if pageOffset > 0 %}
+		<button class="btn btn-block btn-xs btn-primary" onclick="renderlist({{page}})">Torna su</button>
+	{% endif %}
+	{% if page > 1 %}
+		<button class="btn btn-block btn-xs btn-default" onclick="renderlist({{page}}, {{pageOffset+1}})">Scorri giu</button>
+	{% endif %}
+</div>
+
 <div class="list-group">
+	{% set nextpage = false %}
 	{% for tp in tappe %}
 
-	{% if loop.index == page * pageSize + 1 %}
-		<button class="btn btn-primary" onclick="renderlist({{page}})">pag {{page}}</button>	
+	{% if loop.index > page * pageSize %}
+		{% set nextpage = true %}
 	{% else %}	
 		<div class="panel-group" title="{{ tp.data|date("d/m/Y") }}" >
-			<div class="panel panel-default" role="button" 
+			<div class="panel panel-info" role="button" 
 				data-toggle="collapse" data-target="#collapse{{ loop.index - 1 }}" aria-expanded="false" 
 				onclick="showMMarker({{ loop.index - 1 }}); $(this).toggleClass( 'panel-primary' );
 				">
@@ -16,7 +27,10 @@
 						<a href="{{ path('remove_stop', {'id': tp.id}) }}">x</a>
 					{% endif %}
 				</div>
-				<div id="collapse{{ loop.index - 1 }}" class="collapse panel-body">{{ tp.addr }}</div>
+				<div id="collapse{{ loop.index - 1 }}" class="collapse panel-body">
+					<div>{{ tp.addr }}</div>
+					<div>{{ tp.tweet|default('') }}</div>
+				</div>
 			</div>
 		</div>	
 		<div class="inarray hidden">
@@ -28,6 +42,17 @@
 	
 	{% endfor %}
 </div>
+
+<div id="pagination">
+	{% if page > 1 %}
+		<button class="btn btn-block btn-xs btn-default" onclick="renderlist({{page-1}}, {{pageOffset}})">Meno tappe</button>
+	{% endif %}
+	{% if nextpage %}
+		<button class="btn btn-block btn-xs btn-primary" onclick="renderlist({{page+1}}, {{pageOffset}})">Pi&ugrave; tappe</button>
+	{% endif %}	
+</div>
+<div id="loading" class="hidden">Loading...</div>
+
 </div>
 
 <script type="text/javascript">
@@ -36,13 +61,23 @@ var list = $("div.inarray").map(function() {
 	return [$(this).children("div").map(function() {return $(this).text()}).get()]	
 	}).get();
 	
-function renderlist(page){
+function renderlist(page, offset){
+var callUrl = "/list/" + page ;
+if (offset!=='undefined' && offset>0){
+ callUrl = callUrl + "/" + offset ;
+};
+console.log(callUrl);
 $.ajax({
         type: "GET",
-        url: "/list/"+(page+1),
+        url: callUrl,
         success: function(response) {
         	$('#renderList').html( response );
         	rendering();
+        },
+        beforeSend: function() {
+        	$('#loading').removeClass('hidden');
+        	$('#pagination').children().addClass('disabled');
+        	$('#prepagination').children().addClass('disabled');        	
         }
     });
 }

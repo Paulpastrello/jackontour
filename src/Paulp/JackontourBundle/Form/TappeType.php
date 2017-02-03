@@ -26,23 +26,24 @@ class TappeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+    	$inputClass = 'form-control';
     	$tappe = new Tappe();
     	
         if( $options['step'] == 2 ){
         	$builder
-        		->add('nome', 'hidden')
+        		->add('nome', 'text', array('disabled' => true, 'attr' => array('class' => $inputClass)))
+        		->add('addr', 'text', array('disabled' => true, 'attr' => array('class' => $inputClass)))
+        		->add('email', 'text', array('required' => false, 'attr' => array('class' => $inputClass, 'placeholder' => 'Email')))
+        		->add('tweet', 'textarea', array('required' => false, 'attr' => array('class' => $inputClass, 'placeholder' => 'Messaggio', 'maxlength' => 160)))
         		->add('latlng', 'hidden')
-        		->add('addr', 'text', array('disabled' => true))
-        		->add('email', 'text', array('required' => false))
-        		->add('tweet', 'textarea', array('required' => false))
-        		->add('save', 'submit', array('label' => 'Conferma'))
-        		->add('cancel', 'submit', array('label' => 'Modifica'));
+        		->add('save', 'submit', array('label' => 'Conferma', 'attr' => array('class' => 'btn btn-block btn-primary')))
+        		->add('cancel', 'submit', array('label' => 'Modifica', 'attr' => array('class' => 'btn btn-block btn-default')));
         }else {
         	$builder
-	        	->add('nome', 'text')
-	        	->add('addr', 'text')
+	        	->add('nome', 'text', array('attr' => array('class' => $inputClass, 'placeholder' => 'Nome')))
+	        	->add('addr', 'text', array('attr' => array('class' => $inputClass, 'placeholder' => 'Indirizzo')))
 	        	->add('latlng', 'hidden')
-	        	->add('save', 'submit', array('label' => 'Inserisci'));
+	        	->add('save', 'submit', array('label' => 'Inserisci', 'attr' => array('class' => 'btn btn-primary')));
         	
         	$builder
 	        	->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($tappe) {

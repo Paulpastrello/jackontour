@@ -15,18 +15,27 @@ use Paulp\JackontourBundle\Form\TappeType;
 class TourController extends Controller
 {
 
+	/**
+	 * @Route("/listext/{page}", name="listext")
+	 * @Template()
+	 */
+	public function listextAction($page = 1)
+	{
+		$pageSize = 25;
+		return $this->listAction($page, $pageSize, ($page-1)*$pageSize);
+	}
+	
     /**
-     * @Route("/list/{page}")
+     * @Route("/list/{page}/{pageOffset}", defaults={"pageOffset" = 0})
      * @Template()
      */
-    public function listAction($page = 1)
+    public function listAction($page = 1, $pageSize = 5, $pageOffset = 0)
     {
-    	$pageSize = 5;
-      	$em = $this->getDoctrine()->getManager();
+    	$em = $this->getDoctrine()->getManager();
     	$tappe = $em->getRepository('PaulpJackontourBundle:Tappe')
-				->findBy(array('status' => 'C'), array('data' => 'DESC'), $page * $pageSize + 1, 0);
-				
-        return array('tappe' => $tappe, 'pageSize' => $pageSize, 'page' => $page);  
+    	->findBy(array('status' => 'C'), array('data' => 'DESC'), $page * $pageSize + 1, $pageOffset);
+    	 
+    	return array('tappe' => $tappe, 'pageSize' => $pageSize, 'page' => $page, 'pageOffset' => $pageOffset);    	  
     }
 
     /**
@@ -35,14 +44,12 @@ class TourController extends Controller
      */
     public function showAction(Request $request)
     {
-    	$session = $request->getSession();
-       // crea un task fornendo alcuni dati fittizi per questo esempio
+		// crea un task fornendo alcuni dati fittizi per questo esempio
 		$tappe = new Tappe();
 		$form = $this->createForm($this->get('paulp_jackontour_tappetype'), $tappe, 
 			array('action' => $this->generateUrl('paulp_jackontour_stop_add'))
 		);
 				
-		$session->remove('sesstap');
 		return array('form' => $form->createView());    
     }
 
