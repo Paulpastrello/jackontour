@@ -1,0 +1,8 @@
+<div class="list-group">
+	{% for insta in instatags %}
+  		<a class="list-group-item" href="{{ path('instapics', {'tag': insta.name} ) }}">
+  			<span class="badge-title">{{insta.name}}</span>  		
+  			<span class="badge">{{insta.media_count}}</span>
+  		</a>
+  	{% endfor %}
+</div>

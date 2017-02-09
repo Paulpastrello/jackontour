@@ -6,6 +6,7 @@
 	{% endif %}
 	{% if page > 1 %}
 		<button class="btn btn-block btn-xs btn-default" onclick="renderlist({{page}}, {{pageOffset+1}})">Scorri giu</button>
+		<div class="clearfix"></div>
 	{% endif %}
 </div>
 
@@ -16,20 +17,20 @@
 	{% if loop.index > page * pageSize %}
 		{% set nextpage = true %}
 	{% else %}	
-		<div class="panel-group" title="{{ tp.data|date("d/m/Y") }}" >
+		<div class="panel-group" title="{{ tp.data|date("d/m/Y") }}" >			
+			{% if app.session.get('lastId') is defined and app.session.get('lastId') == tp.id %}
+				<a class="btn btn-block btn-xs btn-danger" href="{{ path('remove_stop', {'id': tp.id}) }}" 
+				onclick="return confirm('Vuoi davvero cancellare la tappa?')">Cancella tappa</a>
+			{% endif %}
 			<div class="panel panel-info" role="button" 
 				data-toggle="collapse" data-target="#collapse{{ loop.index - 1 }}" aria-expanded="false" 
-				onclick="showMMarker({{ loop.index - 1 }}); $(this).toggleClass( 'panel-primary' );
+				onclick="showMMarker({{ loop.index - 1 }}); $(this).toggleClass( 'panel-info' ).toggleClass( 'panel-primary' );
 				">
 				<div class="panel-heading">
 					[{{ tp.nome }}]: {{ tp.city|default(tp.addr) }} # {{tp.id}}
-					{% if app.session.get('lastId') is defined and app.session.get('lastId') == tp.id %}
-						<a href="{{ path('remove_stop', {'id': tp.id}) }}">x</a>
-					{% endif %}
 				</div>
 				<div id="collapse{{ loop.index - 1 }}" class="collapse panel-body">
-					<div>{{ tp.addr }}</div>
-					<div>{{ tp.tweet|default('') }}</div>
+					{{ tp.addr }}
 				</div>
 			</div>
 		</div>	
@@ -60,26 +61,30 @@
 var list = $("div.inarray").map(function() { 
 	return [$(this).children("div").map(function() {return $(this).text()}).get()]	
 	}).get();
-	
-function renderlist(page, offset){
-var callUrl = "/list/" + page ;
-if (offset!=='undefined' && offset>0){
- callUrl = callUrl + "/" + offset ;
-};
 
-$.ajax({
-        type: "GET",
-        url: callUrl,
-        success: function(response) {
-        	$('#renderList').html( response );
-        	rendering();
-        },
-        beforeSend: function() {
-        	$('#loading').removeClass('hidden');
-        	$('#pagination').children().addClass('disabled');
-        	$('#prepagination').children().addClass('disabled');        	
-        }
-    });
+function delTappa(id){
+
+}	
+function renderlist(page, offset){
+	var callUrl = "/list/" + page ;
+
+	if (offset!=='undefined' && offset>0){
+	 callUrl = callUrl + "/" + offset ;
+	};
+
+	$.ajax({
+	        type: "GET",
+	        url: callUrl,
+	        success: function(response) {
+	        	$('#renderList').html( response );
+	        	rendering();
+	        },
+	        beforeSend: function() {
+	        	$('#loading').removeClass('hidden');
+	        	$('#pagination').children().addClass('disabled');
+	        	$('#prepagination').children().addClass('disabled');        	
+	        }
+	    });
 }
 //-->
 </script>

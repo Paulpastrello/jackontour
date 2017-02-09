@@ -36,29 +36,29 @@ class Googleapi
     	$ch = curl_init();
     	curl_setopt($ch, CURLOPT_URL, $details_url);
     	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    	$google = json_decode(curl_exec($ch), true);
+    	$google = json_decode(curl_exec($ch));
     	
-    	if(count($google['results'])>0){
-    		$result = $google['results'][0];
+    	if(count($google->results)>0){
+    		$result = current($google->results);
     		if($result!=null){
-    			$location = $result['geometry']['location'];
-    			$formatted_address = $result['formatted_address'];
-    			$address_components = $result['address_components'];
+    			$location = $result->geometry->location;
+    			$formatted_address = $result->formatted_address;
+    			$address_components = $result->address_components;
     			 
     			$city = "";
-    			for ($c = 0; $c < count($address_components); $c++) {
-    				if($address_components[$c]['types'][0]==='administrative_area_level_3')
-    					$city = $address_components[$c]['long_name'];
-    				else if($address_components[$c]['types'][0]==='locality'){
-    					$city = $address_components[$c]['long_name'];
+    			foreach ($address_components as $addrc) {
+    				if(current($addrc->types)==='administrative_area_level_3')
+    					$city = $addrc->long_name;
+    				else if(current($addrc->types)==='locality'){
+    					$city = $addrc->long_name;
     					break;
     				}
     			}
     		}
     		
     		$geoloc = new Geoloc();
-    		$geoloc->setLat($location['lat']);
-    		$geoloc->setLng($location['lng']);
+    		$geoloc->setLat($location->lat);
+    		$geoloc->setLng($location->lng);
     		$geoloc->setCity($city);
     		$geoloc->setAddress($formatted_address);
     		return $geoloc;
@@ -78,14 +78,14 @@ class Googleapi
 	    'Content-Length:0 ' ) 
 	    ); 
 	    
-    	$google = json_decode(curl_exec($ch), true);
+    	$google = json_decode(curl_exec($ch));
     
-    	if(isset($google['location'])){
-    		$location = $google['location'];
+    	if(isset($google->location)){
+    		$location = $google->location;
     		
     		$geoloc = new Geoloc();
-    		$geoloc->setLat($location['lat']);
-    		$geoloc->setLng($location['lng']);
+    		$geoloc->setLat($location->lat);
+    		$geoloc->setLng($location->lng);
     		return $geoloc;
     	}
     	else return null;

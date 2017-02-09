@@ -55,7 +55,7 @@ function setLocation(position){
 	deleteMarkers(cmarkers);
 	cmarkers=[];
 	var tempMarker = addMarker(position);
-	tempMarker.setIcon(greenicon);
+	tempMarker.setIcon(pinicon);
 	cmarkers.push(tempMarker);
 	setFormFields(position);
   

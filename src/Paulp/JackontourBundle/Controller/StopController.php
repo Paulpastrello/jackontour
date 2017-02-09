@@ -35,12 +35,12 @@ class StopController extends Controller
 				
 			$this->addFlash(
 					'success',
-					'Eliminata la posizione'. $tappe->getAddr()
+					'Eliminata la posizione '. $tappe->getAddr()
 			);
 			$session->remove('lastId');
 		} else {
 			if($tappe == null) $errMsg = 'Attenzione: Tappa non trovata!';
-			elseif($id != $session->get('lastId')) $errMsg = 'WE! Hai cercato di eliminare una Tappa non tua!';
+			elseif($id != $session->get('lastId')) $errMsg = 'Beccato! Hai cercato di eliminare una Tappa non tua!';
 			else $errMsg = 'Errore: impossibile eliminare la tappa';
 			$this->addFlash(
 					'danger',
@@ -80,11 +80,6 @@ class StopController extends Controller
 						'step' => 2
 					)
 			);
-			
-// 			$this->addFlash(
-// 				'info',
-// 				'Controlla sulla mappa il tuo indirizzo: " '.$tappe->getAddr().' ". Se è corretto conferma la posizione. Altrimenti ti prego di riprovare.'
-// 			);
 
 			return $this->render("PaulpJackontourBundle:Stop:completeform.html.twig", array('form' => $form->createView()));
 		} else {
@@ -111,15 +106,19 @@ class StopController extends Controller
 		);
 		$form->handleRequest($request);
 		
+		$session->remove('sesstap');
 		if ($form->get('cancel')->isClicked()) {
+			$tappe->setLatlng('');
+			$tappe->setCity('');
+			
 			$form = $this->createForm($this->get('paulp_jackontour_tappetype'), $tappe,
 					array(
 							'action' => $this->generateUrl('paulp_jackontour_stop_add'),
 							'step' => 1
 					)
-			);
-			$session->remove('sesstap');
+			);			
 			return $this->render("PaulpJackontourBundle:Tour:show.html.twig", array('form' => $form->createView()));
+			
 		} else if ($form->isValid()) {
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($tappe);
@@ -129,10 +128,9 @@ class StopController extends Controller
 			
 			$this->addFlash(
 					'success',
-					'Grazie per aver inserito la posizione. Il tuo indirizzo &egrave; nella lista!'
+					'Grazie per aver inserito la posizione. Il tuo indirizzo e\' nella lista tappe!'
 			);
-		
-			$session->remove('sesstap');
+			
 			return $this->redirectToRoute("home");
 		}
 		return $this->render("PaulpJackontourBundle:Stop:completeform.html.twig", array('form' => $form->createView()));

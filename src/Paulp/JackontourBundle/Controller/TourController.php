@@ -16,10 +16,10 @@ class TourController extends Controller
 {
 
 	/**
-	 * @Route("/listext/{page}", name="listext")
+	 * @Route("/listappe/{page}", name="listappe")
 	 * @Template()
 	 */
-	public function listextAction($page = 1)
+	public function listappeAction($page = 1)
 	{
 		$pageSize = 25;
 		return $this->listAction($page, $pageSize, ($page-1)*$pageSize);

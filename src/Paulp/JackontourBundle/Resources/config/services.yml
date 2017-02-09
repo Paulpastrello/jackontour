@@ -13,3 +13,7 @@ services:
   class: Paulp\JackontourBundle\Service\Googleapi
   arguments: ["%googlekey%"]
   
+ paulp_jackontour_instaapi:
+  class: Paulp\JackontourBundle\Service\Instaapi
+  arguments: ["%client_id%", "%client_secret%"]
+  

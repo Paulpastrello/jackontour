@@ -1,0 +1,67 @@
+{% extends "PaulpJackontourBundle::base.html.twig" %}
+{% block title %} JackonInstagram {% endblock %}
+{% block page %}
+	
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 col-sm-12">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header text-primary">#{{instatag}}</h1>
+				</div>
+		
+				{% for insta in instapics %}
+					<div class="visible-lg col-lg-3">
+						<div class="thumbnail">
+							<div class="caption">
+								<p>{{insta.user.username}}</p>
+					      	</div>
+					      	<a data-toggle="modal" href="#{{insta.id}}">
+					      		<img class="img-thumbnail" src="{{insta.images.low_resolution.url}}" alt="{{insta.caption.text}}" />
+					      	</a>
+					      	<div class="caption">
+					        	<div>{{insta.location.name}}</div>
+					        	<h3>{{insta.caption.text}}</h3>
+					      	</div>
+				      	</div>
+			        </div>
+					<div class="hidden-lg col-md-3 col-sm-4 col-xs-6">
+						<a data-toggle="modal" href="#{{insta.id}}">
+						  <img class="img-thumbnail" src="{{insta.images.thumbnail.url}}" alt="{{insta.caption.text}}" title="{{insta.location.name}}"/>
+						</a>
+						<div class="caption">
+						  <p>{{insta.caption.text}}</p>
+						</div>
+			        </div>
+			        
+			        <!-- Modal -->
+					<div id="{{insta.id}}" class="modal fade" role="dialog">
+					  <div class="modal-dialog">					
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <button type="button" class="close" data-dismiss="modal">&times;</button>
+					        <h4 class="modal-title">{{insta.user.username}}</h4>
+					      </div>
+					      <div class="modal-body">
+					        <img class="img-thumbnail" src="{{insta.images.standard_resolution.url}}" alt="{{insta.caption.text}}" />
+					      </div>
+					      <div class="modal-footer">
+					      	<div>{{insta.location.name}}</div>
+				        	<h3>{{insta.caption.text}}</h3>
+					      </div>
+					    </div>					
+					  </div>
+					</div>
+					
+				{% endfor %}
+			</div>
+		</div>
+		{#
+		<div class="col-md-3 hidden-sm hidden-xs">
+			{{ render(controller('PaulpJackontourBundle:Instaapi:instatags')) }}
+		</div>
+		#}
+	</div>
+</div>
+	
+{% endblock %}
