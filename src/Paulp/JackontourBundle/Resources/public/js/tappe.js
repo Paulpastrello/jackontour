@@ -1,5 +1,5 @@
 //COSTANTI
-var openErr = '<div class="alert alert-danger alert-dismissible"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> ';
+var openErr = '<div class="alert alert-danger alert-dismissible"><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> ';
 var openInfo = '<div class="alert alert-info alert-dismissible"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> ';
 var dismissBtn = '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
 var closeDiv = '</div>';
@@ -25,6 +25,10 @@ function setFormFields(position){
 	}
 }
 
+function callbackGoogleAddressErr(){
+	removeFormLocation();
+	$('#geolocmsg').html(openErr+dismissBtn+'Posizione non riconosciuta. Controlla l\'indirizzo o seleziona un punto sulla mappa.'+closeDiv);
+}
 function callbackGoogleAddress(response){
 	var address = response.geolocAddress;
 	$('#paulp_jackontourbundle_tappe_latlng').val(response.geolocPosition);
@@ -36,10 +40,13 @@ function getGeolocation(){
 	try{
 		getGoogleLocation();
 	} catch(err) {
-		$('#geolocmsg').html(openErr+dismissBtn+'Oooops! La tua posizione non è disponibile.'+closeDiv);
+		callbackGoogleLocationErr();
 	}
 }
 
+function callbackGoogleLocationErr(){
+	$('#geolocmsg').html(openErr+dismissBtn+'Posizione non disponibile. Inserisci l\'indirizzo o seleziona un punto sulla mappa'+closeDiv);
+}
 function callbackGoogleLocation(response){
 	var latlng = new google.maps.LatLng(response.geolocLat, response.geolocLng);
 	setLocation(latlng);

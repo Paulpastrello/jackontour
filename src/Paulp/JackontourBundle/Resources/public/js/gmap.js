@@ -24,6 +24,9 @@ function getGoogleAddress(position){
 	        dataType: "json",
 	        success: function(response) {
 	        	callbackGoogleAddress(response);
+	        },
+	        error: function() {
+	        	callbackGoogleAddressErr();
 	        }
 	    });
 	} catch(err){
@@ -38,6 +41,9 @@ function getGoogleLocation(){
 	        url: 'gapiloc',
 	        success: function(response) {
 	        	callbackGoogleLocation(response);	        	
+	        },
+	        error: function() {
+	        	callbackGoogleLocationErr();
 	        }
 	    });
 	} catch(err){
@@ -63,7 +69,6 @@ function zoomMap(obj) {
 	if(typeof(obj) === "undefined" || obj==null || obj.length<=0)
 		obj = markers; //vuoto quindi leggo dalla lista markers
 	
-	console.log("preparo il zooomming");
 	if(obj.length>0){
 		for(i=0;i<obj.length;i++) {
 			bounds.extend(obj[i].getPosition());

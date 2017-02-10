@@ -23,13 +23,17 @@ class GoogleapiController extends Controller
 	{
 		
 		if (!$request->isXmlHttpRequest()) {
-			throw $this->createHttpNotFoundException();
+			throw $this->createNotFoundException();
 		}
 		
 		$latlng = $request->get('lat').",".$request->get('lng');
 		
-		$googledata = $this->get('paulp_jackontour_googleapi')->getGoogleAddress($latlng);		
-		return $googledata->getJson();
+		$googledata = $this->get('paulp_jackontour_googleapi')->getGoogleAddress($latlng);	
+		
+		if($googledata!=null)	
+			return $googledata->getJson();
+		else 
+			throw $this->createNotFoundException();
 		
 	}
 	
@@ -43,11 +47,15 @@ class GoogleapiController extends Controller
 	{
 	
 		if (!$request->isXmlHttpRequest()) {
-			throw $this->createHttpNotFoundException();
+			throw $this->createNotFoundException();
 		}
 	
-		$googledata = $this->get('paulp_jackontour_googleapi')->callGooglelocation();		
-		return $googledata->getJson();
+		$googledata = $this->get('paulp_jackontour_googleapi')->callGooglelocation();
+		
+		if($googledata!=null)
+			return $googledata->getJson();
+		else
+			throw $this->createNotFoundException();
 	
 	}
 	
