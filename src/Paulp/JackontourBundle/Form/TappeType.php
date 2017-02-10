@@ -4,9 +4,9 @@ namespace Paulp\JackontourBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Paulp\JackontourBundle\Entity\Tappe;
 use Paulp\JackontourBundle\Entity\Geoloc;
 use Paulp\JackontourBundle\Service\Googleapi;
@@ -82,9 +82,9 @@ class TappeType extends AbstractType
     }
     
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => Tappe::class,
