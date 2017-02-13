@@ -40,14 +40,28 @@ function getGoogleLocation(){
 	        type: "GET",
 	        url: 'gapiloc',
 	        success: function(response) {
-	        	callbackGoogleLocation(response);	        	
+	        	callbackGoogleLocation(response.geolocLat, response.geolocLng);	        	
 	        },
 	        error: function() {
-	        	callbackGoogleLocationErr();
+	        	callbackGoogleLocationErr(null);
 	        }
 	    });
 	} catch(err){
 		throw err;
+	}
+}
+
+//Geolocalizzazione html5
+function getHTML5GeoLocation() {
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(showPosition, callbackGoogleLocationErr);
+	} else {
+		callbackGoogleLocationErr('NOT_SUPPORTED');
+	}
+
+	function showPosition(position) {
+		//centralizzo in callbackGoogleLocation
+		callbackGoogleLocation(position.coords.latitude, position.coords.longitude);
 	}
 }
 

@@ -38,17 +38,40 @@ function callbackGoogleAddress(response){
 
 function getGeolocation(){
 	try{
-		getGoogleLocation();
+		// da qui scelgo che tipo di geoloc chiamare
+//		getGoogleLocation();
+		getHTML5GeoLocation();
 	} catch(err) {
-		callbackGoogleLocationErr();
+		callbackGoogleLocationErr(null);
 	}
 }
 
-function callbackGoogleLocationErr(){
-	$('#geolocmsg').html(openErr+dismissBtn+'Posizione non disponibile. Inserisci l\'indirizzo o seleziona un punto sulla mappa'+closeDiv);
+function callbackGoogleLocationErr(error){
+	var msgErr = 'Posizione non disponibile. Inserisci l\'indirizzo o seleziona un punto sulla mappa.';
+	if(error!=null){
+		if (error.code != null){
+			switch(error.code) {
+			    case error.PERMISSION_DENIED:
+			    	msgErr = 'Hai negato la richiesta di Geolocalizzazione? Verifica le impostazioni del tuo Browser.';
+			        break;
+			    case error.POSITION_UNAVAILABLE:
+			    	break;
+			    case error.TIMEOUT:
+			    	msgErr = 'Il sistema non ha risposto in tempo. Riprova adesso.';
+			        break;
+			    case error.UNKNOWN_ERROR:
+			        break;
+			}
+		}
+		else if (error === 'NOT_SUPPORTED'){
+			msgErr = 'Oooops! Il tuo browser non supporta la Geolocalizzazione.'
+		}
+	}
+	$('#geolocmsg').html(openErr+dismissBtn+msgErr+closeDiv);	
 }
-function callbackGoogleLocation(response){
-	var latlng = new google.maps.LatLng(response.geolocLat, response.geolocLng);
+
+function callbackGoogleLocation(geolocLat, geolocLng){
+	var latlng = new google.maps.LatLng(geolocLat, geolocLng);
 	setLocation(latlng);
 	map.panTo(latlng);
 }
