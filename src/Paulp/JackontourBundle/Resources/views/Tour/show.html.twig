@@ -9,15 +9,24 @@
 	{% endif %}
 	
 	<div class="row">	
-		<div class="col-sm-9 col-xs-12">
+		<div id="mobilemap" class="col-md-9 col-sm-12">
 			{{ include('PaulpJackontourBundle:Tour:map.html.twig') }}
 		</div>
-		<div class="visible-xs col-xs-12 page-header"></div>
-		<div class="col-sm-3 col-xs-12">
+		<div id="mobilelist" class="hidden-sm hidden-xs col-md-3 col-sm-12">
 			{{ render(controller('PaulpJackontourBundle:Tour:list')) }}
-		</div>
+		</div>		
 	</div>
 	
+{% endblock %}
+
+{% block footer %}
+<footer class="footer">
+<nav id="navfooter" class="navbar navbar-default navbar-fixed-bottom">
+  <div class="container">
+    <button class="btn btn-block" onclick="expandlist()">Expand list</button>
+  </div>
+</nav>
+</footer>
 {% endblock %}
 
 {% block javascripts %}
@@ -25,4 +34,22 @@
 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
 <script src="{{ asset('bundles/paulpjackontour/js/tappe.js') }}"></script>
 {% endif %}
+
+
+<script type="text/javascript">
+<!--
+$(document).ready(function(){
+var bodyH = $('body').prop('scrollHeight');
+$(".fullheight").height(bodyH-200);
+});
+
+function expandlist(){
+$('#mobilelist').toggleClass('hidden-sm').toggleClass('hidden-xs');
+var listHeight = $('#mobilelist').prop('scrollHeight');
+var bodyscroll = $('body').prop('scrollHeight');
+$(".fullheight").height(bodyscroll-200-listHeight);
+
+}
+//-->
+</script>
 {% endblock %}

@@ -9,6 +9,7 @@ body{
 	font-family: 'Lato', sans-serif;	
 	/* per navbar fixed */ 
 	padding-top:70px;
+	padding-bottom:70px;
 }
 h1,h2,h3{
 	font-family: 'Lato', sans-serif;	
@@ -20,6 +21,5 @@ h1,h2,h3{
 	z-index:2;
 }
 #map-canvas{
-	width:100%; 
-	height:500px;
+	width:100%;
 }
